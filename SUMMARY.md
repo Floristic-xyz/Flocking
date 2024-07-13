@@ -1,4 +1,4 @@
 # Table of contents
 
-* [👋 Welcome to Frolicking!](README.md)
+* [👋 Welcome to Flocking!](README.md)
 * [⚡ Demo](demo.md)
