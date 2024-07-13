@@ -6,6 +6,8 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { Carousel } from 'react-responsive-carousel';
 import { Card, Input, Space, Avatar, List, Divider, Flex, Tag, Button } from 'antd';
 const { Search } = Input;
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+
 
 function App() {
   const [nfts, setNfts] = useState([])
@@ -49,6 +51,7 @@ function App() {
     <div className="App">
 
       <div className='container'>
+        <ConnectButton />;
 
         <div className='header'>
           <p>
