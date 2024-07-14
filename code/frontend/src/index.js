@@ -10,7 +10,7 @@ import {
   getDefaultConfig,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
+import { WagmiProvider, http } from 'wagmi';
 import {
   sepolia,
 } from 'wagmi/chains';
@@ -24,6 +24,9 @@ const config = getDefaultConfig({
   projectId: '3268d896e07487497e12ae5f260f6144',
   chains: [sepolia],
   ssr: false, // If your dApp uses server side rendering (SSR)
+  transports: {
+    [sepolia.id]: http('https://eth-sepolia.g.alchemy.com/v2/ruQKgzG2W5u2fjdtQ23pl7rs3l_wqoUy')
+  },
 });
 
 const queryClient = new QueryClient();
@@ -33,7 +36,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
+        <RainbowKitProvider coolMode>
           <App />
         </RainbowKitProvider>
       </QueryClientProvider>
