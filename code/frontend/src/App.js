@@ -9,12 +9,12 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useEnsName } from 'wagmi'
 import abi from './abi';
 import { useWriteContract } from 'wagmi'
+import ENS from './ENS';
+import Nouns from './Nouns';
 
 const { Search } = Input;
 
 function App() {
-  const { writeContract } = useWriteContract();
-
   const { address: loggedInAddress } = useAccount()
   console.log('loggedInAddress ', loggedInAddress)
 
@@ -23,6 +23,9 @@ function App() {
   const [tokens, setTokens] = useState([])
   const [ens, setEns] = useState('')
   const [txId, setTxId] = useState('')
+  const [hasNouns, setHasNouns] = useState(false)
+  const [showEns, setShowEns] = useState(false)
+  const [afterEns, setAfterEns] = useState(false)
 
   const onSearch = (_address) => {
     setAddress(_address);
@@ -42,6 +45,10 @@ function App() {
       if (res.data) {
         const _nfts = res.data.items.map(nft => nft.image_url);
         setNfts(_nfts);
+        const nouns = res.data.items.filter(nft => nft.token.address === '0x9C8fF314C9Bc7F6e59A9d9225Fb22946427eDC03');
+        if (nouns.length > 0) {
+          setHasNouns(true);
+        }
       }
     }
     catch(error) {
@@ -65,99 +72,107 @@ function App() {
     console.log('click');
   }
 
-  const onSearchENS = (_ens) => {
-    console.log('onSearchENS');
-    writeContract({
-      abi,
-      address: '0x0F83bAfCa8529a254B2C8Af46108c9F39540b653',
-      functionName: 'register',
-      args: [
-        _ens
-      ],
-    }, {
-    onSuccess: (txId) => {
-      setEns(_ens);
-      setTxId(txId);
-    }
-   });
+
+  const onClickMint = () => {
+    setShowEns(true);
+  }
+
+  const onFinishEns = () => {
+    setAfterEns(true);
+    setShowEns(false);
   }
 
   return (
     <div className="App">
 
       <div className='container'>
-        <ConnectButton />;
+        <ConnectButton />
+        <br/><br/><br/><br/>
+          {
+            showEns ?
+              <ENS onFinish={onFinishEns} />
+            :
+          <>
+          {
+          !afterEns ? 
+          <>
+          <div className='header'>
+            <p>
+              You new way to discover crypto
+            </p>
+          </div>
 
-        <div className='header'>
-          <p>
-            You new way to discover crypto
-          </p>
-        </div>
+          {
+            !showEns ?
+              <div className='searchBar' >
+                <Search placeholder="Address" onSearch={onSearch} enterButton />
+              </div>
+            : undefined
+          }
 
-        <div className='searhBar' >
-          <Search placeholder="input search text" onSearch={onSearch} enterButton />
-        </div>
-        <Button onClick={onClickButton}>I don't have a wallet</Button>
-        {
-          address ?
-            <Card title={address} bordered={false} className='profile-card'>
-            </Card>
-          : null
-        }
+          {
+            !loggedInAddress ?
+              <Button onClick={onClickButton}>I don't have a wallet</Button>
+            : undefined
+          }
 
-        <Divider orientation="left"></Divider>
+          {/* {
+            address ?
+              <Card title={address} bordered={false} className='profile-card'>
+              </Card>
+            : null
+          } */}
 
-        <div className='searhBar' >
-          <Search placeholder="ENS name" onSearch={onSearchENS} enterButton />
-        </div>
+          <Divider orientation="left"></Divider>
 
-        <Divider orientation="left"></Divider>
+          <Button type="primary" size="large" onClick={onClickMint}>Mint ENS</Button>
 
+          <Divider orientation="left"></Divider>
 
-        {
-          loggedInAddress || address ?
-            <>
-              <Tag className='tag' color="magenta">Tokens</Tag>
-              <List
-                itemLayout="horizontal"
-                dataSource={tokens}
-                renderItem={(item, index) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar src={item.token.icon_url} />}
-                      title={item.token.symbol}
-                      description={item.value}
-                    />
-                  </List.Item>
-                )}
-                className='token-container'
-              />
-            </>
-          : null
-        }
-
-
-
-        {
-          loggedInAddress || address ?
-            <>
-              <Divider orientation="left"></Divider>
-              <Space />
-              <Tag className='tag' color="orange">NFTs</Tag>
-              <Carousel>
-              {
-                  nfts.map((nft, i) => (
-                      <img className='nft-image' src={nft} key={nft} />
-                  ))
-              }
-      
-              </Carousel>
-            </>
+          </>
           : undefined
         }
 
-        </div>
+        {
+          afterEns || address ?
+            hasNouns ?
+              <Nouns />
+            : 
+            loggedInAddress || address ?
+              <>
+                <Tag className='tag' color="magenta">Tokens</Tag>
+                <List
+                  itemLayout="horizontal"
+                  dataSource={tokens}
+                  renderItem={(item, index) => (
+                    <List.Item>
+                      <List.Item.Meta
+                        avatar={<Avatar src={item.token.icon_url} />}
+                        title={item.token.symbol}
+                        description={item.value}
+                      />
+                    </List.Item>
+                  )}
+                  className='token-container'
+                />        
+                <Divider orientation="left"></Divider>
+                <Space />
+                <Tag className='tag' color="orange">NFTs</Tag>
+                <Carousel>
+                {
+                    nfts.map((nft, i) => (
+                        <img className='nft-image' src={nft} key={nft} />
+                    ))
+                }
         
+                </Carousel>
+              </>
+            : undefined
+          : undefined
+        }
+        </>
+        }
+      </div>
     </div>
   );
 }

@@ -15,14 +15,29 @@
 
 .header {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   font-size: 40px;
   padding: 2rem;
+  color: #0B5027;
 }
 
 .header p {
   max-width: 50vw;
   line-height: 4rem;
+}
+
+.header.small {
+  font-size: 30px;
+}
+
+.header.small p {
+  line-height: 3rem;
+}
+
+.header.small span, .header.small a {
+  font-size: 15px;
 }
 
 .image-container {
@@ -35,8 +50,15 @@
   max-height: 500px;
 }
 
-.searhBar {
+.searchBar {
   margin: 1rem;
+}
+
+.searchBar input {
+  border-radius: 30px;
+  height: 50px;
+  width: 500px;
+  text-align: center;
 }
 
 .profile-card {
@@ -52,4 +74,29 @@
   font-size: 20px;
   padding: 1rem;
   margin-bottom: 2rem;
+}
+
+.nouns-container {
+  display: flex;
+  justify-content: center;
+}
+
+.nouns-1, .nouns-2 {
+  width: 500px;
+  background-size: cover;
+  height: 300px;
+  border-radius: 7rem;
+  margin: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  padding: 1rem;
+}
+
+.nouns-1 {
+  background-image: url("/public/nouns-1.png");
+}
+
+.nouns-2 {
+  background-image: url("/public/nouns-2.png");
 }
