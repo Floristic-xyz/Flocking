@@ -16,8 +16,8 @@ const web3auth = new Web3Auth({
       appName: "Flocking",
       mode: "auto", // light, dark or auto
       loginMethodsOrder: ["google", "twitter", "facebook", "github", "email", "apple"],
-      logoLight: "../assets/Logo_Flocking.svg",
-      logoDark: "../assets/Logo_Flocking.svg",
+      logoLight: "https://svgshare.com/i/18C8.svg",
+      logoDark: "https://svgshare.com/i/18C8.svg",
       defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl, tr
       loginGridCol: 3,
       primaryButton: "socialLogin", // "externalLogin" | "socialLogin" | "emailLogin"
