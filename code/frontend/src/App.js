@@ -9,6 +9,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useEnsName } from 'wagmi'
 import abi from './abi';
 import { useWriteContract } from 'wagmi'
+import { web3auth } from "./components/Web3Auth";
 
 const { Search } = Input;
 
@@ -23,6 +24,38 @@ function App() {
   const [tokens, setTokens] = useState([])
   const [ens, setEns] = useState('')
   const [txId, setTxId] = useState('')
+  const [provider, setProvider] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await web3auth.initModal();
+        setProvider(web3auth.provider);
+
+        if (web3auth.connected) {
+          setLoggedIn(true);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    init();
+  }, []);
+
+  const login = async () => {
+    const web3authProvider = await web3auth.connect();
+    setProvider(web3authProvider);
+    if (web3auth.connected) {
+      setLoggedIn(true);
+    }
+  };
+
+
+  const onChange = (currentSlide) => {
+    console.log(currentSlide);
+  };
 
   const onSearch = (_address) => {
     setAddress(_address);
@@ -61,8 +94,8 @@ function App() {
     }
   }
 
-  const onClickButton = () => {
-    console.log('click');
+  const onClickButton = async ()  => {
+    await login();
   }
 
   const onSearchENS = (_ens) => {
