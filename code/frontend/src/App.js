@@ -5,14 +5,42 @@ import axios from 'axios';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import { Card, Input, Space, Avatar, List, Divider, Flex, Tag, Button } from 'antd';
-const { Search } = Input;
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { web3auth } from "./components/Web3Auth";
 
+const { Search } = Input;
 
 function App() {
   const [nfts, setNfts] = useState([])
   const [address, setAddress] = useState('')
   const [tokens, setTokens] = useState([])
+  const [provider, setProvider] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await web3auth.initModal();
+        setProvider(web3auth.provider);
+
+        if (web3auth.connected) {
+          setLoggedIn(true);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    init();
+  }, []);
+
+  const login = async () => {
+    const web3authProvider = await web3auth.connect();
+    setProvider(web3authProvider);
+    if (web3auth.connected) {
+      setLoggedIn(true);
+    }
+  };
 
 
   const onChange = (currentSlide) => {
@@ -43,8 +71,8 @@ function App() {
     setTokens(res.data.items.filter(_token => _token.token.circulating_market_cap && _token.token.circulating_market_cap>10000));
   }
 
-  const onClickButton = () => {
-    console.log('click');
+  const onClickButton = async ()  => {
+    await login();
   }
 
   return (
