@@ -74,6 +74,8 @@
   font-size: 20px;
   padding: 1rem;
   margin-bottom: 2rem;
+  color: #068940;
+  text-align: left;
 }
 
 .nouns-container {
@@ -100,3 +102,7 @@
 .nouns-2 {
   background-image: url("/public/nouns-2.png");
 }
+
+/* .ant-divider {
+  border-block-start: 2px solid #068940;
+} */
