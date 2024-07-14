@@ -131,7 +131,7 @@ function App() {
           <>
           <div className='header'>
             <p>
-              You new way to discover crypto
+              Your new way to discover crypto
             </p>
           </div>
 
@@ -156,11 +156,11 @@ function App() {
             : null
           } */}
 
-          <Divider orientation="left"></Divider>
+          <Divider orientation="left" color='#068940'></Divider>
 
           <Button type="primary" size="large" onClick={onClickMint}>Mint ENS</Button>
 
-          <Divider orientation="left"></Divider>
+          <Divider orientation="left" color='#068940'></Divider>
 
           </>
           : undefined
@@ -173,7 +173,7 @@ function App() {
             : 
             loggedInAddress || address ?
               <>
-                <Tag className='tag' color="magenta">Tokens</Tag>
+                <div className='tag'>Tokens</div>
                 <List
                   itemLayout="horizontal"
                   dataSource={tokens}
@@ -190,7 +190,7 @@ function App() {
                 />        
                 <Divider orientation="left"></Divider>
                 <Space />
-                <Tag className='tag' color="orange">NFTs</Tag>
+                <div className='tag' color='#068940'>NFTs</div>
                 <Carousel>
                 {
                     nfts.map((nft, i) => (
