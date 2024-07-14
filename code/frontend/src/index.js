@@ -12,11 +12,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base,
+  sepolia,
 } from 'wagmi/chains';
 import {
   QueryClientProvider,
@@ -26,8 +22,8 @@ import {
 const config = getDefaultConfig({
   appName: 'Flocking',
   projectId: '3268d896e07487497e12ae5f260f6144',
-  chains: [mainnet],
-  ssr: true, // If your dApp uses server side rendering (SSR)
+  chains: [sepolia],
+  ssr: false, // If your dApp uses server side rendering (SSR)
 });
 
 const queryClient = new QueryClient();

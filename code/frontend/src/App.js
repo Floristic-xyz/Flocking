@@ -5,46 +5,81 @@ import axios from 'axios';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import { Card, Input, Space, Avatar, List, Divider, Flex, Tag, Button } from 'antd';
-const { Search } = Input;
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount, useEnsName } from 'wagmi'
+import abi from './abi';
+import { useWriteContract } from 'wagmi'
 
+const { Search } = Input;
 
 function App() {
+  const { writeContract } = useWriteContract();
+
+  const { address: loggedInAddress } = useAccount()
+  console.log('loggedInAddress ', loggedInAddress)
+
   const [nfts, setNfts] = useState([])
   const [address, setAddress] = useState('')
   const [tokens, setTokens] = useState([])
-
-
-  const onChange = (currentSlide) => {
-    console.log(currentSlide);
-  };
+  const [ens, setEns] = useState('')
+  const [txId, setTxId] = useState('')
 
   const onSearch = (_address) => {
-    setAddress(_address)
+    setAddress(_address);
   };
 
   useEffect(() => {
-    if (address) {
+    console.log(loggedInAddress);
+    if (loggedInAddress || address) {
       getNfts();
       getTokens();
     }
-  }, [address]);
+  }, [address, loggedInAddress]);
 
   const getNfts = async () => {
-      const res = await axios.get(`https://eth.blockscout.com/api/v2/addresses/${address}/nft`);
-      console.log(res.data);
-      const _nfts = res.data.items.map(nft => nft.image_url);
-      setNfts(_nfts);
+    try {
+      const res = await axios.get(`https://eth.blockscout.com/api/v2/addresses/${address || loggedInAddress}/nft`);
+      if (res.data) {
+        const _nfts = res.data.items.map(nft => nft.image_url);
+        setNfts(_nfts);
+      }
+    }
+    catch(error) {
+
+    }
   }
 
   const getTokens = async () => {
-    const res = await axios.get(`https://eth.blockscout.com/api/v2/addresses/${address}/tokens`);
-    console.log(res.data);
-    setTokens(res.data.items.filter(_token => _token.token.circulating_market_cap && _token.token.circulating_market_cap>10000));
+    try {
+      const res = await axios.get(`https://eth.blockscout.com/api/v2/addresses/${address || loggedInAddress}/tokens`);
+      if (res.data) {
+        setTokens(res.data.items.filter(_token => _token.token.circulating_market_cap && _token.token.circulating_market_cap>10000));
+      }
+    }
+    catch(error) {
+
+    }
   }
 
   const onClickButton = () => {
     console.log('click');
+  }
+
+  const onSearchENS = (_ens) => {
+    console.log('onSearchENS');
+    writeContract({
+      abi,
+      address: '0x0F83bAfCa8529a254B2C8Af46108c9F39540b653',
+      functionName: 'register',
+      args: [
+        _ens
+      ],
+    }, {
+    onSuccess: (txId) => {
+      setEns(_ens);
+      setTxId(txId);
+    }
+   });
   }
 
   return (
@@ -59,7 +94,7 @@ function App() {
           </p>
         </div>
 
-        <div className='searBar' >
+        <div className='searhBar' >
           <Search placeholder="input search text" onSearch={onSearch} enterButton />
         </div>
         <Button onClick={onClickButton}>I don't have a wallet</Button>
@@ -70,8 +105,17 @@ function App() {
           : null
         }
 
+        <Divider orientation="left"></Divider>
+
+        <div className='searhBar' >
+          <Search placeholder="ENS name" onSearch={onSearchENS} enterButton />
+        </div>
+
+        <Divider orientation="left"></Divider>
+
+
         {
-          address ?
+          loggedInAddress || address ?
             <>
               <Tag className='tag' color="magenta">Tokens</Tag>
               <List
@@ -95,7 +139,7 @@ function App() {
 
 
         {
-          address ?
+          loggedInAddress || address ?
             <>
               <Divider orientation="left"></Divider>
               <Space />
