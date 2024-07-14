@@ -57,7 +57,7 @@ function ENS({ onFinish }) {
                     You are now ready discovering crypto in a new way.
                 </span>
                 <br/>
-                <a href={`https://eth-sepolia.blockscout.com/tx/${txId}`}>View on BlockScout</a>
+                <a href={`https://eth-sepolia.blockscout.com/tx/${txId}`} target='_blank'>View on BlockScout</a>
                 <br/>
                 <Button type="primary" onClick={onContinue}>Continue</Button>
             </div>
